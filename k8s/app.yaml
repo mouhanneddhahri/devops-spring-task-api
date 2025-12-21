@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: task-api
+spec:
+  replicas: 3  # <--- CHANGEMENT 1 : On veut 3 copies du programme !
+  strategy:    # <--- CHANGEMENT 2 : On définit la stratégie "RollingUpdate"
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1  # Au max 1 pod indisponible pendant la mise à jour
+      maxSurge: 1        # Au max 1 pod créé en plus pendant la mise à jour
+  selector:
+    matchLabels:
+      app: task-api
+  template:
+    metadata:
+      labels:
+        app: task-api
+    spec:
+      containers:
+        - name: task-api
+          image: mouhanneddhahri/task-api:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          # (Optionnel mais Pro) Ajout de limites pour éviter de tuer le PC
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: task-api
+spec:
+  type: NodePort
+  selector:
+    app: task-api # Le service va distribuer le trafic vers les 3 pods
+  ports:
+    - port: 8080
+      targetPort: 8080
+      nodePort: 30007
