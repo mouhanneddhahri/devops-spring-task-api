@@ -33,7 +33,7 @@ Pour lancer ce projet localement, vous avez besoin de :
 
 ##  Guide de Démarrage (Local)
 
-### 1. Cloner le projet
+ 1. Cloner le projet
 ```bash
 git clone https://github.com/mouhanneddhahri/devops-spring-task-api.git
 cd devops-spring-task-api
